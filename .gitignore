@@ -1,0 +1,4 @@
+*.o
+
+String_toUpperCase
+String_toLowerCase
