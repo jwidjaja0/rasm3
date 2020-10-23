@@ -20,6 +20,9 @@ nl:	.byte	0
 
 	.global _start 		@ Provide program starting address to linker
 		@Change to String_toUpperCase in the end
+
+	.extern	malloc
+
 	.text
 
 checkLower:
@@ -39,7 +42,7 @@ inc:
 	b	loop
 
 _start:
-@String_toLowerCase:
+@String_toUpperCase:
 	@ Preserve APPCS Required Registers
 	@ push	{r4-r8, r10, r11}
 	@ push	{sp}
@@ -47,30 +50,40 @@ _start:
 
 	@ EXAMPLE, ONLY TO TEST, R0 WILL BE PROVIDED BY CALLING PROGRAM
 	ldr	r0, =str	@ test, preloaded string
-	
+	mov	r6, r0		@ move string to r6
+
+	@Call String_Length to get number of char
+	bl	String_Length	@ call String_Length
+	bl	malloc		@ call malloc
+
+	mov	r8, r0		@ r8 now has allocated dynamic memory
+
+	@@ PREP TO UPPER	
 	ldr	r4, =bUpper
 	ldrb	r4, [r4]
 
 	ldr	r5, =bLower
 	ldrb	r5, [r5]
 
-	mov 	r6, r0		@ move r0 to r4
+	@mov 	r6, r0		@ move r0 to r6
 	ldrb	r7, [r6]	@ get first character
 	
-	ldr	r8, =strNew	@ load r8 pointer to strNew
+	@ldr	r8, =strNew	@ load r8 pointer to strNew
 
 loop:
 	@ check if null
-	cmp	r7, #0x00	
-	beq	final
+	cmp	r7, #0x00	@ check if character is null
+	beq	final		@ string is done if null
 	
 	cmp 	r7, r4		@ check if less than upper
 	
 	ble	checkLower
-	b	inc		@ increment up	
+	b	inc		@ increment up to next character
 	
 final:
-	ldr	r0, =strNew
+	mov	r10, #1		@ to stop gdb
+	@ldr	r0, =strNew	@ load r0 pointer of new string
+	@mov	r0, r8		@ move r8 to r0
 
 ending:	
 	@ -----------------------------
