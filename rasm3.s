@@ -3,6 +3,7 @@
 
 	.data 
 str1:	.asciz 	"Cat in the hat"
+substr:	.asciz	"thee"
 crCr:	.byte	10
 pA:	.space	13			@ space to print
 
@@ -43,6 +44,8 @@ _start:
 	ldr	r0, =crCr
 	bl	putch
 
+	@@@ TEST String_indexOf_1 @@@
+
 	ldr	r0, =str1
 	mov	r1, #'t'
 	bl	String_indexOf_1
@@ -50,7 +53,20 @@ _start:
 	bl	intasc32
 	mov	r0, r1
 	bl 	putstring
+
+	ldr	r0, =crCr
+	bl	putch
+
+	@@@@ TEST String_indexOf_3 @@@
+
+	ldr	r0, =str1
+	ldr	r1, =substr
+	bl	String_indexOf_3
 	
+	ldr	r1, =pA
+	bl	intasc32
+	mov	r0, r1
+	bl	putstring
 
 
 @@ END @@

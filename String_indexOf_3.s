@@ -21,11 +21,11 @@ R0:	index of first occurence, -1 if not found
 @ AAPCS v2020Q2 Required registers are preserved.
 
 	.data
-iInd	.word	0
-pStr1	.byte	0
-pSub1	.byte	0
+iInd:	.word	0
+pStr1:	.byte	0
+pSub1:	.byte	0
 
-	.global	SString_indexOf_3
+	.global	String_indexOf_3
 	.text
 
 String_indexOf_3:
@@ -37,10 +37,10 @@ String_indexOf_3:
 
 	@ store original addressed to memory
 	ldr	r4, =pStr1
-	strb	r0, [r4]
+	str	r0, [r4]
 
 	ldr	r4, =pSub1
-	strb	r1, [r4]
+	str	r1, [r4]
 
 	@ move original addresses to r4 and r5
 	mov	r10, r0			@ r10 has address of string1
@@ -53,17 +53,18 @@ String_indexOf_3:
 
 searchFirst:
 	@ Find first occurence of character
+	mov	r1, r11
 	ldrb	r6, [r1]		@ load first byte of substring to r6
 	mov	r1, r6			@ move char to r1
 	
 	mov	r2, r7			@ start search from index in r7
 	mov	r0, r10			@ move address of string1 to r0
 
-	bl	String_IndexOf_2	
+	bl	String_indexOf_2	
 	
 	@ if doesn't exist, r0 will have -1
 	cmp	r0, #-1			@ if doesn't exist
-	b	notFound	
+	beq	notFound	
 	
 	@ char is found, now compare one by one with substring
 	ldr	r8, =iInd		
@@ -77,21 +78,26 @@ searchFirst:
 	add	r4, r4, r0		@ add r4 by offset of char found
 	
 	mov	r5, r11			@ move r11 to r5, r5 has address of substring
+	b	subLoop
 
 	@ldr	r5, =pSub1
 	@ldrb	r5, [r5]		@ derefernce, now r5 points to original substring
 
 subLoop:
 	@ since first character is already found to match, compare next character
-	add	r4, r4, #1
-	add	r5, r5, #1
+	add	r4, r4, #1		@ r4 points to string1, go to next byte
+	add	r5, r5, #1		@ r5 points to substring, go to next byte
 
-	ldrb 	r7, [r4]
-	ldrb	r8, [r5]
+	ldrb 	r7, [r4]		@ dereference byte to r7
+	ldrb	r8, [r5]		@ dereference byte to r8
 
 	@Check if substring is null, if null and we never break, that means our search ends
-	cmp	r8, 0x00		@ compare with null
+	cmp	r8, #0x00		@ compare with null
 	beq	subFound		@ go to subFound
+
+	@Check if string is null, if null and we never break, then string ends and return -1
+	cmp	r7, #0x00		@ compare with null
+	beq	notFound
 
 	cmp	r7, r8			@ compare if next char is equal
 	
@@ -99,13 +105,11 @@ subLoop:
 
 	b	subLoop			@ go back subloop to compare next char in substring
 	
-	
-	
 incNext:
 	ldr	r7, =iInd		@ index first character found, need to increment up to search for the rest of the string
-	ldrb	r7, [r7]
-	add	r7, r7, #1		@ add 1 to address
-	b	searchFirst
+	ldr	r7, [r7]		@ dereference byte to r7
+	add	r7, r7, #1		@ add 1 to address, start searching at next char in string1
+	b	searchFirst		@ go to searchFirst
 
 
 notFound:
@@ -114,7 +118,7 @@ notFound:
 
 subFound:
 	ldr 	r0, =iInd		@ load r0 pointer to iInd, has index where first matching char is found
-	ldr	ro, [r0]		@ derefernce
+	ldr	r0, [r0]		@ derefernce
 	b	final			@ go to final
 
 final:
