@@ -4,8 +4,8 @@ sL = String_Length.o
 sUC = String_toUpperCase.o
 sLC = String_toLowerCase.o
 
-rasm3: rasm3.o $(sUC) $(sLC)
-	ld -o rasm3 rasm3.o $(sL) $(sUC) $(sLC) $(LL) $(lib1)
+rasm3: rasm3.o $(sUC) $(sLC) String_indexOf_2.o String_indexOf_1.o
+	ld -o rasm3 rasm3.o String_indexOf_1.o String_indexOf_2.o $(sL) $(sUC) $(sLC) $(LL) $(lib1)
 
 rasm3.o: rasm3.s
 	as -g -o rasm3.o rasm3.s
@@ -15,3 +15,9 @@ $(sUC): String_toUpperCase.s
 
 $(sLC): String_toLowerCase.s
 	as -g -o $(sLC) String_toLowerCase.s
+
+String_indexOf1.o: String_indexOf_1.s
+	as -g -o String_indexOf_1.o String_indexOf1.s
+
+String_indexOf2.o: String_indexOf_2.s
+	as -g -o String_indexOf_2.o String_indexOf_2.s
