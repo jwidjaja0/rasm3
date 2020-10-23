@@ -12,13 +12,13 @@
 
 	.data
 
-str:	.asciz	"HoUse"
+@str:	.asciz	"HoUse"
 iUpper:	.byte	0x5a	@ "Z"
 iLower:	.byte	0x41	@ "A"
-strNew:	.space	128
+@strNew:	.space	128
 nl:	.byte	0
 
-	.global _start 		@ Provide program starting address to linker
+	.global String_toLowerCase	@ Provide program starting address to linker
 		@Change to String_toLowerCase in the end
 	.text
 
@@ -38,26 +38,35 @@ inc:
 	add	r8, r8, #1
 	b	loop
 
-_start:
-@String_toLowerCase:
+String_toLowerCase:
 	@ Preserve APPCS Required Registers
-	@ push	{r4-r8, r10, r11}
-	@ push	{sp}
+	push	{r4-r8, r10, r11}
+	push	{sp}
 	@ -----------------------------
+	push	{lr}		@ preserve LR of calling function
 
 	@ EXAMPLE, ONLY TO TEST, R0 WILL BE PROVIDED BY CALLING PROGRAM
-	ldr	r0, =str	@ test, preloaded string
+	@ldr	r0, =str	@ test, preloaded string
+	mov	r6, r0		@ move string to r6
 	
+	@ Call String_Length to get number of char
+	bl	String_Length	@ call String_Length
+
+	@ Now allocate memory, add 1 result to add null at end
+	add 	r0, r0, #1	@ add 1 to length count
+	bl	malloc		@ call malloc
+
+	mov	r8, r0		@ r8 now has allocated dynamic memory
+
+	@@ PREP FOR ACTUAL FUNCTION
 	ldr	r4, =iUpper
 	ldrb	r4, [r4]
 
 	ldr	r5, =iLower
 	ldrb	r5, [r5]
 
-	mov 	r6, r0		@ move r0 to r4
 	ldrb	r7, [r6]	@ get first character
 	
-	ldr	r8, =strNew	@ load r8 pointer to strNew
 
 loop:
 	@ check if null
@@ -70,19 +79,18 @@ loop:
 	b	inc		@ increment up	
 	
 final:
-	ldr	r0, =strNew
 
-ending:	
+	pop	{lr}		@ restore LR of calling function
 	@ -----------------------------
 	@ Restoring our APPCS mandated registers 
-	@ pop	{sp}
-	@ pop	{r4-r8, r10, r11}
+	pop	{sp}
+	pop	{r4-r8, r10, r11}
 
 	@ONLY USE THIS FOR TESTING (ENDING FUNCT)
-	mov	r0, #0
-	mov	r7, #1
-	svc	0
+	@mov	r0, #0
+	@mov	r7, #1
+	@svc	0
 
 	@RESTORE BELOW FOR EXTERNAL FUNCTION
-	@bx	lr
+	bx	lr
 	.end

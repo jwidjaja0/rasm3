@@ -1,7 +1,6 @@
 /* -- String_toUpperCase.s -- */
 
 @ Purpose: returns the upper case of given string
-
 @ R0:	Address to string
 @ LR: 	Contains the return address
 
@@ -12,14 +11,11 @@
 
 	.data
 
-str:	.asciz	"HoUse bIg"
 bUpper:	.byte	0x7a	@ "z"
 bLower:	.byte	0x61	@ "a"
-strNew:	.space	128
 nl:	.byte	0
 
-	.global _start 		@ Provide program starting address to linker
-		@Change to String_toUpperCase in the end
+	.global String_toUpperCase 		@ Provide program starting address to linker
 
 	.extern	malloc
 
@@ -41,19 +37,22 @@ inc:
 	add	r8, r8, #1
 	b	loop
 
-_start:
-@String_toUpperCase:
+String_toUpperCase:
 	@ Preserve APPCS Required Registers
-	@ push	{r4-r8, r10, r11}
-	@ push	{sp}
+	push	{r4-r8, r10, r11}
+	push	{sp}
 	@ -----------------------------
+	push 	{lr}		@ preserve lr from calling function
 
 	@ EXAMPLE, ONLY TO TEST, R0 WILL BE PROVIDED BY CALLING PROGRAM
-	ldr	r0, =str	@ test, preloaded string
+	@ldr	r0, =str	@ test, preloaded string
 	mov	r6, r0		@ move string to r6
 
 	@Call String_Length to get number of char
 	bl	String_Length	@ call String_Length
+
+	@@ AFTER CALLING STRING_LENGTH, ADD 1 TO RESULT TO ADD NULL AT END
+	add	r0,r0,#1	@ add 1 to length count
 	bl	malloc		@ call malloc
 
 	mov	r8, r0		@ r8 now has allocated dynamic memory
@@ -65,10 +64,8 @@ _start:
 	ldr	r5, =bLower
 	ldrb	r5, [r5]
 
-	@mov 	r6, r0		@ move r0 to r6
 	ldrb	r7, [r6]	@ get first character
 	
-	@ldr	r8, =strNew	@ load r8 pointer to strNew
 
 loop:
 	@ check if null
@@ -81,21 +78,11 @@ loop:
 	b	inc		@ increment up to next character
 	
 final:
-	mov	r10, #1		@ to stop gdb
-	@ldr	r0, =strNew	@ load r0 pointer of new string
-	@mov	r0, r8		@ move r8 to r0
-
-ending:	
+	pop	{lr}		@ restore calling function's lr
 	@ -----------------------------
 	@ Restoring our APPCS mandated registers 
-	@ pop	{sp}
-	@ pop	{r4-r8, r10, r11}
+	pop	{sp}
+	pop	{r4-r8, r10, r11}
 
-	@ONLY USE THIS FOR TESTING (ENDING FUNCT)
-	mov	r0, #0
-	mov	r7, #1
-	svc	0
-
-	@RESTORE BELOW FOR EXTERNAL FUNCTION
-	@bx	lr
+	bx	lr
 	.end
