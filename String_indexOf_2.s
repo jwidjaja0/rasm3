@@ -10,6 +10,8 @@
 
 @ Returned register contents:
 @ R0: 	index of character, -1 if not found
+@ R1:	character to search
+@ R2: 	fromIndex
 
 @ AAPCS v2020Q2 Required registers are preserved.
 
@@ -49,7 +51,7 @@ loop:
 	
 	add	r4, r4, #1	@ increment up
 	add	r0, r0, #1	@ increment result up as well
-	cmp	r4, #0x00	@ compare to null, if null then search end and not found
+	cmp	r8, #0x00	@ compare to null, if null then search end and not found
 	beq	notFound	@ branch to notFound
 	b	loop		@ else, go back to loop
 		
