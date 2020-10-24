@@ -32,3 +32,6 @@ String_lastIndexOf_1.o: String_lastIndexOf_1.s
 
 String_lastIndexOf_2.o: String_lastIndexOf_2.s
 	as -g -o String_lastIndexOf_2.o String_lastIndexOf_2.s
+
+clean: 
+	rm *.o rasm3
