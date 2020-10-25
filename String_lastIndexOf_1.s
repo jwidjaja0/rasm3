@@ -35,3 +35,4 @@ String_lastIndexOf_1:
 	pop	{r4-r8, r10, r11}
 
 	bx	lr
+	.end

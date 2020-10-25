@@ -12,6 +12,10 @@ str2:	.asciz	"my egg in egg noo egg in "
 sub4:	.asciz	"egg"
 sub5:	.asciz	"inn"
 sub6:	.asciz	"my"
+
+str3:	.asciz	"John "
+str4:	.asciz	"Doe"
+
 crCr:	.byte	10
 pA:	.space	13			@ space to print
 
@@ -19,6 +23,14 @@ pA:	.space	13			@ space to print
 	.globl	_start
 
 _start:	
+	ldr	r0, =str3
+	ldr	r1, =str4
+	bl	String_concat
+	bl	putstring
+
+	ldr	r0, =crCr
+	bl	putch
+
 	ldr	r0, =str2
 	bl	putstring
 	ldr	r0, =crCr

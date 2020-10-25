@@ -66,3 +66,4 @@ Sli2final:
 	pop	{r4-r8, r10, r11}
 
 	bx	lr
+	.end
