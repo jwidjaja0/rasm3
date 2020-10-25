@@ -3,7 +3,15 @@
 
 	.data 
 str1:	.asciz 	"Cat in the hat"
-substr:	.asciz	"thee"
+sub0:	.asciz	"thee"
+sub1:	.asciz	"Cat"
+sub2:	.asciz	"hat"
+sub3:	.asciz	" the"
+
+str2:	.asciz	"my egg in egg noo egg in "
+sub4:	.asciz	"egg"
+sub5:	.asciz	"inn"
+sub6:	.asciz	"my"
 crCr:	.byte	10
 pA:	.space	13			@ space to print
 
@@ -11,6 +19,25 @@ pA:	.space	13			@ space to print
 	.globl	_start
 
 _start:	
+	ldr	r0, =str2
+	bl	putstring
+	ldr	r0, =crCr
+	bl	putch
+	
+	ldr	r0, =str2
+	ldr	r1, =sub5
+
+	bl	String_lastIndexOf_3
+	
+	ldr	r1, =pA
+	bl	intasc32
+	mov	r0, r1
+	bl	putstring
+
+	ldr	r0, =crCr
+	bl	putch
+	
+
 	ldr	r0, =str1		@ load r0 pointer to str1
 	bl	putstring		@ call putstring
 	ldr	r0, =crCr
@@ -71,7 +98,7 @@ _start:
 	@@@@ TEST String_indexOf_3 @@@
 
 	ldr	r0, =str1
-	ldr	r1, =substr
+	ldr	r1, =sub0
 	bl	String_indexOf_3
 	
 	ldr	r1, =pA
