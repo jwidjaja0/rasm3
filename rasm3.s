@@ -16,6 +16,10 @@ sub6:	.asciz	"my"
 str3:	.asciz	"John "
 str4:	.asciz	"Doe"
 
+ch1:	.ascii	"o"
+ch2:	.ascii	"i"
+
+
 crCr:	.byte	10
 pA:	.space	13			@ space to print
 
@@ -23,6 +27,19 @@ pA:	.space	13			@ space to print
 	.globl	_start
 
 _start:	
+	ldr	r0, =str3
+	ldr	r1, =ch1
+	ldrb	r1, [r1]
+	ldr	r2, =ch2
+	ldrb	r2, [r2]
+
+	bl	String_replace
+	bl	putstring
+	
+
+	ldr	r0, =crCr
+	bl	putch
+
 	ldr	r0, =str3
 	ldr	r1, =str4
 	bl	String_concat
