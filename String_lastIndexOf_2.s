@@ -1,6 +1,8 @@
 /* -- String_lastIndexOf_2.s --*/
 
 /*
+Redoing String_lastIndexOf_2
+
 Required functions:
 String_indexOf_2
 
@@ -30,34 +32,33 @@ String_lastIndexOf_2:
 	mov	r10, #-1		@ initialize result to -1
 
 	mov	r4, r0			@ move original string1 to r4
-	mov	r5, r2			@ move fromIndex to r5, r5 has fromIndex original	
+	mov	r5, r1			@ move r1 to r5, r5 has char to search
+	mov	r6, r2			@ r6 has index from original
 
-Sli2loop:
-	mov	r0, r4
-	mov	r2, r5
-	bl	String_indexOf_2
+	mov	r10, #-1		@ initialize r10 to -1
+
+	@@ Check for index validity on length
+	mov 	r0, r4			@ move origial string to r0
+	bl 	String_Length		@ call String_Length
 	
-	@@ check if r0 is -1, if so exit
-	cmp	r0, #-1
-	beq	Sli2final
-
-	@@ not -1, so found an index, store to r10
-	mov	r10, r0
-
-	@@ check next, if null then already hit last char in string
-	mov	r6, r4			@ r6 has original string
-	add	r5, r0, #1		@ r5 = index found + 1
-	add	r6, r6, r5		@ r6 points to next char in string after index found
-
-
-	ldrb	r6, [r6]
-	cmp	r6, #0x00		@ compare null
-	beq	Sli2final
-
-	@@ if next not null, continue searching, make returned index to be next search
-	b	Sli2loop
-
+	mov	r8, r0			@ r8 has length of string
 	
+	cmp	r6, r8			@ compare index to length
+	movgt	r6, r8			@ if index greater than length, use length instead
+
+	@@ Check if index less than 0
+	cmp	r6, #0			@ compare r6 to 0
+	blt	Sli2final		@ go to final if index <0
+
+	add	r7, r4, r6		@ r7 = index address + index
+	ldrb	r11, [r7]		@ load byte pointed by r7 to r11
+	cmp	r11, r5			@ compare byte at r11 to char
+	moveq	r10, r6			@ if equal, update r10 to index held in r6
+	beq	Sli2final		@ go to Sli2final
+
+	@@ not equal at this point, so decrement index	
+	sub	r6, r6, #1		@ decrement index by 1
+
 Sli2final:
 	mov	r0, r10			@ move r10 to r0 to return result
 

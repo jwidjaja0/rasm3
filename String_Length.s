@@ -35,7 +35,7 @@ loop:
 	bne	loop		@ keep looping if not null
 
 	@@ REDUCE 1 FOR LENGTH
-	sub	r0, r0, #1	
+	@sub	r0, r0, #1	
 
 	@ -----------------------------
 	@ Restoring our APPCS mandated registers 

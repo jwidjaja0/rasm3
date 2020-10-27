@@ -12,10 +12,8 @@
 
 	.data
 
-@str:	.asciz	"HoUse"
 iUpper:	.byte	0x5a	@ "Z"
 iLower:	.byte	0x41	@ "A"
-@strNew:	.space	128
 nl:	.byte	0
 
 	.global String_toLowerCase	@ Provide program starting address to linker
@@ -59,11 +57,8 @@ String_toLowerCase:
 	mov	r8, r0		@ r8 now has allocated dynamic memory
 
 	@@ PREP FOR ACTUAL FUNCTION
-	ldr	r4, =iUpper
-	ldrb	r4, [r4]
-
-	ldr	r5, =iLower
-	ldrb	r5, [r5]
+	mov	r4, #'Z'
+	mov	r5, #'A'
 
 	ldrb	r7, [r6]	@ get first character
 	

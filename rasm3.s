@@ -1,8 +1,9 @@
 /* -- rasm3.s -- */
 @@ DRIVER PROGRAM @@
+@@ test with archive file for functions @@
 
 	.data 
-str1:	.asciz 	"Cat in the hat"
+str1:	.asciz 	"Green eggs and ham."
 sub0:	.asciz	"thee"
 sub1:	.asciz	"Cat"
 sub2:	.asciz	"hat"
@@ -24,9 +25,27 @@ crCr:	.byte	10
 pA:	.space	13			@ space to print
 
 	.text
-	.globl	_start
+	.global	_start
 
 _start:	
+	ldr	r0, =str1
+	mov	r1, #'g'
+	mov	r2, #6
+	bl	String_lastIndexOf_2
+
+/*
+	ldr	r1, =str2
+	
+	ldr	r0, =crCr
+	bl	putch
+	
+	ldr	r0, =str1
+	bl	String_toUpperCase
+	bl	putstring
+	
+	ldr	r0, =crCr
+	bl	putch
+	
 	ldr	r0, =str3
 	ldr	r1, =ch1
 	ldrb	r1, [r1]
@@ -66,23 +85,6 @@ _start:
 	ldr	r0, =crCr
 	bl	putch
 	
-
-	ldr	r0, =str1		@ load r0 pointer to str1
-	bl	putstring		@ call putstring
-	ldr	r0, =crCr
-	bl	putch
-	ldr	r0, =str1		@ load r0 pointer to str1
-	
-	bl	String_toUpperCase
-	mov	r4, r0			@ move string to r4	
-	bl	putstring	
-	ldr	r0, =crCr
-	bl	putch
-	mov	r0, r4			@ restore all uppercase string
-	bl	String_toLowerCase
-	bl	putstring
-	ldr	r0, =crCr
-	bl	putch
 
 	@@@ TEST STRING_LENGTH
 	ldr	r0, =str1
@@ -155,17 +157,8 @@ _start:
 
 	@@@ TEST String_lastIndexOf_1 @@@
 
-	ldr	r0, =str1
-	mov	r1, #'z'
+*/
 
-	bl	String_lastIndexOf_1
-
-	ldr	r1, =pA
-	bl	intasc32
-	mov	r0, r1
-	bl	putstring
-	ldr	r0, =crCr
-	bl	putch
 	
 
 @@ END @@
